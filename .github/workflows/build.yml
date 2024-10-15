@@ -158,7 +158,7 @@ jobs:
           cd ~
           mkdir qt_build
           cd qt_build
-          ~\qtsrc\configure.bat -release -static -optimize-size -prefix "..\qt_static" -no-feature-accessibility -nomake examples -skip qtquick3d,qtgraphs,qtquick3dphysics
+          ~\qtsrc\configure.bat -release -static -optimize-size -prefix "..\qt_static" -no-feature-accessibility -nomake examples,tools 
           cmake --build . --parallel 4
           cmake --install .
 
@@ -168,7 +168,7 @@ jobs:
           cd ~
           mkdir qt_build
           cd qt_build
-          ~/qtsrc/configure -static -release -optimize-size -prefix "../qt_static" -no-feature-accessibility -skip qtquick3d,qtgraphs,qtquick3dphysics -nomake examples -- -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+          ~/qtsrc/configure -static -release -optimize-size -prefix "../qt_static" -no-feature-accessibility -nomake examples,tools -- -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
           cmake --build . --parallel 3
           cmake --install .
 
@@ -178,7 +178,7 @@ jobs:
           cd ~
           mkdir qt_build
           cd qt_build
-          ~/qtsrc/configure -static -release -optimize-size -prefix "../qt_static" -no-feature-accessibility -skip qtquick3d,qtgraphs,qtquick3dphysics -nomake examples
+          ~/qtsrc/configure -static -release -optimize-size -prefix "../qt_static" -no-feature-accessibility -nomake examples,tools
           cmake --build . --parallel 4
           cmake --install .
 

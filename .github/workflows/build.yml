@@ -214,20 +214,6 @@ jobs:
         with:
           path: release
           merge-multiple: true
-      - name: Tag the repository
-        id: tag
-        run: |
-          # See https://docs.github.com/en/get-started/using-git/dealing-with-special-characters-in-branch-and-tag-names
-          TAG=v$(date -Iseconds | sed 's/[T:\+]/-/g')
-          echo "$TAG"
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-          git tag -a $TAG -m "Published version $TAG" ${GITHUB_SHA}
-          git push origin $TAG
-      - name: Cut a new release
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: release/*
-          tag_name: ${{ steps.tag.outputs.tag }}
       - name: Find Qt version
         shell: python
         run: |
@@ -241,12 +227,21 @@ jobs:
           with open(os.environ["GITHUB_ENV"], "a") as f:
             f.write("QT_VERSION=" + match[1])
       - name: Shorthand tags
+        id: tag
         run: |
           git config --global user.email "27856297+dependabot-preview[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git tag -d v$QT_VERSION || true
           git tag v$QT_VERSION -m v$QT_VERSION
           git push -f origin v$QT_VERSION
+          TAG=v${QT_VERSION%.*}v$(date -Iseconds | sed 's/[T:\+]/-/g')
           git tag -d v${QT_VERSION%.*} || true
-          git tag v${QT_VERSION%.*} -m v${QT_VERSION%.*}
-          git push -f origin v${QT_VERSION%.*}
+          git tag $TAG -m "Published version $TAG"
+          git push -f origin $TAG
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+      - name: Cut a new release
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          tag_name: ${{ steps.tag.outputs.tag }}
+

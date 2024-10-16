@@ -71,8 +71,7 @@ jobs:
           print("Found Qt version:", match[1])
           print("Version TAG:", match2[1])
           with open(os.environ["GITHUB_ENV"], "a") as f:
-            f.write("QT_VERSION=" + match[1])
-            f.write("VERSION_TAG=" + match2[1])
+            f.write("QT_VERSION=" + match[1] + "\n" + VERSION_TAG=" + match2[1])
 
 
       

@@ -159,7 +159,7 @@ jobs:
           cd ~
           mkdir qt_build
           cd qt_build
-          ~\qtsrc\configure.bat -release -static static-runtime -optimize-size -prefix "..\qt_static" -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -system-zlib -system-pcre -system-sqlite -skip qtwebview,qtwebengine
+          ~\qtsrc\configure.bat -release -static static-runtime -prefix "..\qt_static" -no-pch -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -system-zlib -system-pcre -system-sqlite -skip qtwebview,qtwebengine
           cmake --build . --parallel 4 -j4
           cmake --install .
 
@@ -169,7 +169,7 @@ jobs:
           cd ~
           mkdir qt_build
           cd qt_build
-          ~/qtsrc/configure -static -release -optimize-size -prefix "../qt_static" -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -system-zlib -system-pcre -system-sqlite -skip qtwebview,qtwebengine -- -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+          ~/qtsrc/configure -static -release -prefix "../qt_static" -no-pch -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -sql-sqlite -system-zlib -system-pcre -system-sqlite -skip qtwebview,qtwebengine -- -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
           cmake --build . --parallel 3 -j3
           cmake --install .
 
@@ -179,7 +179,7 @@ jobs:
           cd ~
           mkdir qt_build
           cd qt_build
-          ~/qtsrc/configure -static -release -optimize-size -prefix "../qt_static" -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -system-zlib -system-pcre -system-sqlite -skip qtwebview,qtwebengine
+          ~/qtsrc/configure -static -release -prefix "../qt_static" -no-pch -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -system-zlib -system-pcre -system-sqlite -skip qtwebview,qtwebengine
           cmake --build . --parallel 4 -j4
           cmake --install .
 

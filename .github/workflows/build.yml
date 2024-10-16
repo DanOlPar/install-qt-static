@@ -52,13 +52,6 @@ jobs:
       fail-fast: false
       matrix:
         os: ${{ fromJSON(needs.setup.outputs.activeos) }}
-        include:
-        - os: windows-latest
-          os-caption: windows
-        - os: macos-latest
-          os-caption: macos
-        - os: ubuntu-latest
-          os-caption: linux
 
     runs-on: ${{matrix.os}}
 
@@ -186,11 +179,11 @@ jobs:
       - name: Package binaries
         run: |
           cd ~
-          7z a -r qt-${{env.QT_VERSION}}-static-${{matrix.os-caption}}.zip qt_static
+          7z a -r qt-${{env.QT_VERSION}}-static-${{matrix.os}}.zip qt_static
 
       - uses: actions/upload-artifact@v4
         with:
-          name: qt-static-${{matrix.os-caption}}
+          name: qt-static-${{matrix.os}}
           path:  ~/qt-*.zip
 
   release:

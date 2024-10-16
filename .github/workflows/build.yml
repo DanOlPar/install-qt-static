@@ -196,7 +196,7 @@ jobs:
       - name: Package binaries
         run: |
           cd ~
-          7z a -r qt-${{env.QT_VERSION}}-static-${{matrix.os}}.zip qt_static
+          7z a qt-${{env.QT_VERSION}}-static-${{matrix.os}}.zip qt_static
 
       - uses: actions/upload-artifact@v4
         with:

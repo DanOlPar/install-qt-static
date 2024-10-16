@@ -158,8 +158,8 @@ jobs:
           cd ~
           mkdir qt_build
           cd qt_build
-          ~\qtsrc\configure.bat -release -static -optimize-size -prefix "..\qt_static" -no-feature-accessibility -nomake examples -nomake tools 
-          cmake --build . --parallel 4
+          ~\qtsrc\configure.bat -release -static static-runtime -optimize-size -prefix "..\qt_static" -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -system-zlib -system-libpcre2 -system-sqlite -skip qtwebview,qtwebengine
+          cmake --build . --parallel 4 -j4
           cmake --install .
 
       - name: Build Qt (macOS)
@@ -168,8 +168,8 @@ jobs:
           cd ~
           mkdir qt_build
           cd qt_build
-          ~/qtsrc/configure -static -release -optimize-size -prefix "../qt_static" -no-feature-accessibility -nomake examples -nomake tools -- -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
-          cmake --build . --parallel 3
+          ~/qtsrc/configure -static -release -optimize-size -prefix "../qt_static" -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -system-zlib -system-libpcre2 -system-sqlite -skip qtwebview,qtwebengine -- -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+          cmake --build . --parallel 3 -j3
           cmake --install .
 
       - name: Build Qt (linux)
@@ -178,8 +178,8 @@ jobs:
           cd ~
           mkdir qt_build
           cd qt_build
-          ~/qtsrc/configure -static -release -optimize-size -prefix "../qt_static" -no-feature-accessibility -nomake examples -nomake tools
-          cmake --build . --parallel 4
+          ~/qtsrc/configure -static -release -optimize-size -prefix "../qt_static" -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -system-zlib -system-libpcre2 -system-sqlite -skip qtwebview,qtwebengine
+          cmake --build . --parallel 4 -j4
           cmake --install .
 
       - name: Package binaries

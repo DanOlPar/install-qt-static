@@ -57,6 +57,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Find Qt version
         shell: python
         run: |
@@ -79,17 +80,8 @@ jobs:
           sudo apt remove clang-13
           sudo apt remove clang-14
           sudo apt remove clang-15
-          sudo apt-get install -y tar mesa-utils xvfb apt-utils \
-                sudo vim git wget curl locales ssh htop \
-                build-essential libssl-dev zlib1g-dev libbz2-dev \
-                libreadline-dev libsqlite3-dev wget curl llvm \
-                libncurses5-dev libncursesw5-dev xz-utils liblzma-dev \
-                g++ make unzip zip \
-               libfontconfig1-dev \
-               libfreetype-dev libx11-dev libx11-xcb-dev libxcb-cursor-dev libxcb-glx0-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-render-util0-dev libxcb-shape0-dev libxcb-shm0-dev libxcb-sync-dev libxcb-util-dev libxcb-xfixes0-dev libxcb-xinerama0-dev libxcb-xkb-dev libxcb1-dev libxext-dev libxfixes-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxrender-dev \
-               python3-html5lib nodejs \
-              mesa-common-dev libgl1-mesa-dev libglu1-mesa-dev \
-              llvm-dev libclang-dev 
+          sudo apt-get install -y < linux_packages.txt
+              
           
 
       - name: Restore qt sources from cache

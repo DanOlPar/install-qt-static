@@ -69,6 +69,7 @@ jobs:
           print("Found Qt version:", match[1])
           with open(os.environ["GITHUB_ENV"], "a") as f:
             f.write("QT_VERSION=" + match[1])
+            f.write("QT_VERSION_TAG=" + action_content)
 
       
       - name: Set up Linux libraries
@@ -144,8 +145,17 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         if: contains(matrix.os, 'windows')
 
+
+      - name: Restore previous build for system if tag is same
+        id: cache-build-restore
+        uses: actions/cache/restore@v4
+        with:
+          key:  ${{env.VERSION_TAG}}-${{ matrix.os }}
+          path: "~/qt_build"
+
+
       - name: Build Qt (Windows)
-        if: contains(matrix.os, 'windows')
+        if: contains(matrix.os, 'windows') && steps.cache-build-restore.outputs.cache-hit != 'true'
         env:
           CL: /MP # Build with multiple processes
         run: |
@@ -154,27 +164,40 @@ jobs:
           cd qt_build
           ~\qtsrc\configure.bat -release -static -static-runtime -prefix "..\qt_static" -no-pch -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -system-zlib -system-pcre -system-sqlite -skip qtwebview,qtwebengine
           cmake --build . --parallel 4 -j4
-          cmake --install .
 
       - name: Build Qt (macOS)
-        if: contains(matrix.os, 'macos')
+        if: contains(matrix.os, 'macos') && steps.cache-build-restore.outputs.cache-hit != 'true'
         run: |
           cd ~
           mkdir qt_build
           cd qt_build
           ~/qtsrc/configure -static -release -prefix "../qt_static" -no-pch -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -sql-sqlite -system-zlib -system-pcre -system-sqlite -skip qtwebview,qtwebengine -- -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
           cmake --build . --parallel 3 -j3
-          cmake --install .
 
       - name: Build Qt (linux)
-        if: contains(matrix.os, 'ubuntu')
+        if: contains(matrix.os, 'ubuntu') && steps.cache-build-restore.outputs.cache-hit != 'true'
         run: |
           cd ~
           mkdir qt_build
           cd qt_build
           ~/qtsrc/configure -static -release -prefix "../qt_static" -no-pch -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -system-zlib -system-pcre -system-sqlite -skip qtwebview,qtwebengine
           cmake --build . --parallel 4 -j4
+
+
+      - name: Install build
+        if: success()
+        run: |
+          cd ~
+          cd qt_build
           cmake --install .
+
+      - name: Save build if successful if version tag is same
+        id: cache-build-save
+        if: success() && steps.cache-build-restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          key: ${{ steps.cache-build-restore.outputs.cache-primary-key }}
+          path: "~/qt_build"
 
       - name: Package binaries
         run: |

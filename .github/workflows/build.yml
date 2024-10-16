@@ -67,10 +67,13 @@ jobs:
           with open("action.yml") as f:
             action_content = f.read()
           match = re.search(r"VERSION_TAG: v([\d.]+)", action_content)
+          match2 = re.search(r"VERSION_TAG: v([\d.-]+)", action_content)
           print("Found Qt version:", match[1])
+          print("Version TAG:", match2[1])
           with open(os.environ["GITHUB_ENV"], "a") as f:
             f.write("QT_VERSION=" + match[1])
-            f.write("QT_VERSION_TAG=" + action_content)
+            f.write("VERSION_TAG=" + match2[1])
+
 
       
       - name: Set up Linux libraries

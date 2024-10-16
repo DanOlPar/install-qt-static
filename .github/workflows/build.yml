@@ -152,7 +152,7 @@ jobs:
           cd ~
           mkdir qt_build
           cd qt_build
-          ~\qtsrc\configure.bat -release -static static-runtime -prefix "..\qt_static" -no-pch -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -system-zlib -system-pcre -system-sqlite -skip qtwebview,qtwebengine
+          ~\qtsrc\configure.bat -release -static -static-runtime -prefix "..\qt_static" -no-pch -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -system-zlib -system-pcre -system-sqlite -skip qtwebview,qtwebengine
           cmake --build . --parallel 4 -j4
           cmake --install .
 

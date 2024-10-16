@@ -33,13 +33,13 @@ jobs:
         id: setup
         run: |
           ARRAY=()
-          if [ ${{ env.BUILD_LINUX }}  ]; then
+          if [ ${{ env.BUILD_LINUX }} = true  ]; then
             ARRAY+=('ubuntu-latest')
           fi
-          if [ ${{ env.BUILD_WINDOWS }}  ]; then
+          if [ ${{ env.BUILD_WINDOWS }} = true  ]; then
             ARRAY+=('windows-latest')
           fi
-          if [ ${{ env.BUILD_MACOS }}  ]; then
+          if [ ${{ env.BUILD_MACOS }} = true  ]; then
             ARRAY+=('macos-latest')
           fi
           json='runner='

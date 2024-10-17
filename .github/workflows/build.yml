@@ -46,6 +46,36 @@ jobs:
           json+=$(printf '%s\n' "${ARRAY[@]}" | jq -R . | jq -s .)
           echo $json
           echo $json >> $GITHUB_OUTPUT
+
+      - name: Get sources from cache if availabe
+        id: cache-qt-check
+        uses: actions/cache/restore@v4
+        with:
+          key:  ${{env.QT_VERSION}}_src
+          path: "~/qtsrc"
+
+      - name: Clone Qt repo
+        if: steps.cache-qt-check.outputs.cache-hit != 'true'
+        run: |
+          cd ~
+          mkdir qtsrc
+          cd qtsrc
+          git clone https://code.qt.io/qt/qt5.git . -b '${{env.QT_VERSION}}'
+          perl init-repository
+  
+      - name: Save Qt Sources to cache if new
+        id: cache-qt-save
+        if: always() &&  steps.cache-qt-check.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          key: ${{ steps.cache-qt-check.outputs.cache-primary-key }}
+          path: "~/qtsrc"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{env.QT_VERSION}}_src
+          path: "~/qtsrc"
+
   build:
     needs: setup
     strategy:
@@ -84,35 +114,15 @@ jobs:
           sudo apt remove clang-15
           sudo apt-get install -y $(cat linux_packages.txt)
               
-          
+        
 
-      - name: Restore qt sources from cache
-        id: cache-qt-restore
-        uses: actions/cache/restore@v4
+      - uses: actions/download-artifact@v4
+        name: Get qt sources in current runner
         with:
-          key:  ${{env.QT_VERSION}}-${{ matrix.os }}
+          name: ${{env.QT_VERSION}}_src
           path: "~/qtsrc"
-
-
 
       - uses: seanmiddleditch/gha-setup-ninja@v5
-
-      - name: Clone Qt repo
-        if: steps.cache-qt-restore.outputs.cache-hit != 'true'
-        run: |
-          cd ~
-          mkdir qtsrc
-          cd qtsrc
-          git clone https://code.qt.io/qt/qt5.git . -b '${{env.QT_VERSION}}'
-          perl init-repository
-
-      - name: Save Qt Sources to cache if new
-        id: cache-qt-save
-        if: always() &&  steps.cache-qt-restore.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          key: ${{ steps.cache-qt-restore.outputs.cache-primary-key }}
-          path: "~/qtsrc"
       
 
 
@@ -232,7 +242,7 @@ jobs:
           git config --global user.email "27856297+dependabot-preview[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           TAGDEL=v${QT_VERSION%.*}
-          TAG=v${QT_VERSION}-$(date -Iseconds | sed 's/[T:\+]/-/g')
+          TAG=v${QT_VERSION}-$(date '+%Y%m%d_%H%M')
           git tag -d $TAGDEL || true
           git tag $TAG -m "Published version $TAG"
           git push -f origin $TAG

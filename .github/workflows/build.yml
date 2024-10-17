@@ -46,6 +46,8 @@ jobs:
           json+=$(printf '%s\n' "${ARRAY[@]}" | jq -R . | jq -s .)
           echo $json
           echo $json >> $GITHUB_OUTPUT
+          
+      - uses: actions/checkout@v4
 
       - name: Find Qt version
         shell: python

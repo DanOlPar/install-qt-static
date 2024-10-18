@@ -75,7 +75,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           key:  ${{env.QT_VERSION}}_src
-          path: "~/qtsrc"
+          path: "qtsrc"
           enableCrossOsArchive: true
           lookup-only: true
 

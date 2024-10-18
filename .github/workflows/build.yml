@@ -176,6 +176,7 @@ jobs:
           CL: /MP # Build with multiple processes
         run: |
           cd ~
+          ls
           mkdir qt_build
           cd qt_build
           ~\qtsrc\configure.bat -release -static -static-runtime -prefix "..\qt_static" -no-pch -no-feature-accessibility -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -skip qtwebview,qtwebengine

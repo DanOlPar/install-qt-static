@@ -28,7 +28,28 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       activeos: ${{ steps.setup.outputs.runner }}
+      qt_version: ${{ steps.setup.outputs.qt_version }}
+      version_tag: ${{ steps.setup.outputs.version_tag }}
     steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Find Qt version
+        id: get_version
+        shell: python
+        run: |
+          import re
+          import os
+
+          with open("action.yml") as f:
+            action_content = f.read()
+          match = re.search(r"VERSION_TAG: v([\d.]+)", action_content)
+          match2 = re.search(r"VERSION_TAG: v([\d.-]+)", action_content)
+          print("Found Qt version:", match[1])
+          print("Version TAG:", match2[1])
+          with open(os.environ["GITHUB_ENV"], "a") as f:
+            f.write("QT_VERSION=" + match[1] + "\n" + "VERSION_TAG=" + match2[1])
+
       - name: Check os to build
         id: setup
         run: |
@@ -46,23 +67,8 @@ jobs:
           json+=$(printf '%s\n' "${ARRAY[@]}" | jq -R . | jq -s .)
           echo $json
           echo $json >> $GITHUB_OUTPUT
-          
-      - uses: actions/checkout@v4
-
-      - name: Find Qt version
-        shell: python
-        run: |
-          import re
-          import os
-
-          with open("action.yml") as f:
-            action_content = f.read()
-          match = re.search(r"VERSION_TAG: v([\d.]+)", action_content)
-          match2 = re.search(r"VERSION_TAG: v([\d.-]+)", action_content)
-          print("Found Qt version:", match[1])
-          print("Version TAG:", match2[1])
-          with open(os.environ["GITHUB_ENV"], "a") as f:
-            f.write("QT_VERSION=" + match[1] + "\n" + "VERSION_TAG=" + match2[1])
+          echo qt_version=$QT_VERSION >> $GITHUB_OUTPUT
+          echo version_tag=$VERSION_TAG >> $GITHUB_OUTPUT
 
       - name: Get sources from cache if availabe
         id: cache-qt-check
@@ -92,9 +98,25 @@ jobs:
         with:
           name: ${{env.QT_VERSION}}_src
           path: "~/qtsrc"
+          # The level of compression for Zlib to be applied to the artifact archive.
+          # The value can range from 0 to 9.
+          # For large files that are not easily compressed, a value of 0 is recommended for significantly faster uploads.
+          # Optional. Default is '6'
+          compression-level: 0
+          # If true, an artifact with a matching name will be deleted before a new one is uploaded.
+          # If false, the action will fail if an artifact for the given name already exists.
+          # Does not fail if the artifact does not exist.
+          # Optional. Default is 'false'
+          overwrite: true
 
   build:
     needs: setup
+    env: 
+      QT_VERSION: ${{needs.setup.outputs.qt_version}}
+      VERSION_TAG: ${{needs.setup.outputs.version_tag}}
+    outputs:
+      qt_version: ${{needs.setup.outputs.qt_version}}
+      version_tag: ${{needs.setup.outputs.version_tag}}
     strategy:
       fail-fast: false
       matrix:
@@ -104,23 +126,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Find Qt version
-        shell: python
-        run: |
-          import re
-          import os
-
-          with open("action.yml") as f:
-            action_content = f.read()
-          match = re.search(r"VERSION_TAG: v([\d.]+)", action_content)
-          match2 = re.search(r"VERSION_TAG: v([\d.-]+)", action_content)
-          print("Found Qt version:", match[1])
-          print("Version TAG:", match2[1])
-          with open(os.environ["GITHUB_ENV"], "a") as f:
-            f.write("QT_VERSION=" + match[1] + "\n" + "VERSION_TAG=" + match2[1])
-
-
       
       - name: Set up Linux libraries
         if: contains(matrix.os, 'ubuntu')
@@ -233,6 +238,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: build
+    env: 
+      QT_VERSION: ${{needs.build.outputs.qt_version}}
+      VERSION_TAG: ${{needs.build.outputs.version_tag}}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -241,18 +249,6 @@ jobs:
         with:
           path: release
           merge-multiple: true
-      - name: Find Qt version
-        shell: python
-        run: |
-          import re
-          import os
-
-          with open("action.yml") as f:
-            action_content = f.read()
-          match = re.search(r"VERSION_TAG: v([\d.]+)", action_content)
-          print("Found Qt version:", match[1])
-          with open(os.environ["GITHUB_ENV"], "a") as f:
-            f.write("QT_VERSION=" + match[1])
       - name: Shorthand tags
         id: tag
         run: |

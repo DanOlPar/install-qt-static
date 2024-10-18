@@ -70,12 +70,14 @@ jobs:
           echo qt_version=$QT_VERSION >> $GITHUB_OUTPUT
           echo version_tag=$VERSION_TAG >> $GITHUB_OUTPUT
 
-      - name: Get sources from cache if availabe
+      - name: Check if sources from cache are availabe
         id: cache-qt-check
         uses: actions/cache/restore@v4
         with:
           key:  ${{env.QT_VERSION}}_src
           path: "~/qtsrc"
+          enableCrossOsArchive: true
+          lookup-only: true
 
       - name: Clone Qt repo
         if: steps.cache-qt-check.outputs.cache-hit != 'true'
@@ -93,21 +95,7 @@ jobs:
         with:
           key: ${{ steps.cache-qt-check.outputs.cache-primary-key }}
           path: "~/qtsrc"
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{env.QT_VERSION}}_src
-          path: "~/qtsrc"
-          # The level of compression for Zlib to be applied to the artifact archive.
-          # The value can range from 0 to 9.
-          # For large files that are not easily compressed, a value of 0 is recommended for significantly faster uploads.
-          # Optional. Default is '6'
-          compression-level: 0
-          # If true, an artifact with a matching name will be deleted before a new one is uploaded.
-          # If false, the action will fail if an artifact for the given name already exists.
-          # Does not fail if the artifact does not exist.
-          # Optional. Default is 'false'
-          overwrite: true
+          enableCrossOsArchive: true
 
   build:
     needs: setup
@@ -137,12 +125,13 @@ jobs:
           sudo apt-get install -y $(cat linux_packages.txt)
               
         
-
-      - uses: actions/download-artifact@v4
-        name: Get qt sources in current runner
+      - name: Get qt sources from cache
+        id: cache-qt-restore
+        uses: actions/cache/restore@v4
         with:
-          name: ${{env.QT_VERSION}}_src
+          key:  ${{env.QT_VERSION}}_src
           path: "~/qtsrc"
+          enableCrossOsArchive: true
 
       - uses: seanmiddleditch/gha-setup-ninja@v5
       

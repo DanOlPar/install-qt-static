@@ -88,13 +88,17 @@ jobs:
           git clone https://code.qt.io/qt/qt5.git . -b '${{env.QT_VERSION}}'
           perl init-repository
   
+      - name: Go to home directory
+        run: |
+          cd ~
+
       - name: Save Qt Sources to cache if new
         id: cache-qt-save
         if: always() &&  steps.cache-qt-check.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           key: ${{ steps.cache-qt-check.outputs.cache-primary-key }}
-          path: "~/qtsrc"
+          path: "qtsrc"
           enableCrossOsArchive: true
 
   build:
@@ -123,14 +127,18 @@ jobs:
           sudo apt remove clang-14
           sudo apt remove clang-15
           sudo apt-get install -y $(cat linux_packages.txt)
-              
+          
+      - name: Go to home directory
+        run: |
+          cd ~
+
         
       - name: Get qt sources from cache
         id: cache-qt-restore
         uses: actions/cache/restore@v4
         with:
           key:  ${{env.QT_VERSION}}_src
-          path: "~/qtsrc"
+          path: "qtsrc"
           enableCrossOsArchive: true
           fail-on-cache-miss: true
 

@@ -70,6 +70,10 @@ jobs:
           echo qt_version=$QT_VERSION >> $GITHUB_OUTPUT
           echo version_tag=$VERSION_TAG >> $GITHUB_OUTPUT
 
+      - name: Go to home directory
+        run: |
+          cd ~
+
       - name: Check if sources from cache are availabe
         id: cache-qt-check
         uses: actions/cache/restore@v4

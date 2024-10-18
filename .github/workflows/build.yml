@@ -213,6 +213,7 @@ jobs:
         with:
           key: ${{ steps.cache-build-restore.outputs.cache-primary-key }}
           path: "~/qt_build"
+          fail-on-cache-miss: true
 
       - name: Package binaries
         run: |

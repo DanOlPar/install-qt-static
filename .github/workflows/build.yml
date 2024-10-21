@@ -77,7 +77,7 @@ jobs:
           key:  ${{env.QT_VERSION}}_src
           path: "~/qtsrc"
           enableCrossOsArchive: true
-          lookup-only: true
+          #lookup-only: true
 
       - name: Clone Qt repo
         if: steps.cache-qt-check.outputs.cache-hit != 'true'
@@ -96,6 +96,11 @@ jobs:
           key: ${{ steps.cache-qt-check.outputs.cache-primary-key }}
           path: "~/qtsrc"
           enableCrossOsArchive: true
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: qt-sources
+          path: "~/qtsrc"
 
   build:
     needs: setup
@@ -123,20 +128,13 @@ jobs:
           sudo apt remove clang-14
           sudo apt remove clang-15
           sudo apt-get install -y $(cat linux_packages.txt)
-              
-        
-      - name: Get qt sources from cache
-        id: cache-qt-restore
-        uses: actions/cache/restore@v4
-        with:
-          key:  ${{env.QT_VERSION}}_src
-          path: "~/qtsrc"
-          enableCrossOsArchive: true
-          fail-on-cache-miss: true
 
       - uses: seanmiddleditch/gha-setup-ninja@v5
       
-
+      - uses: actions/download-artifact@master
+        with:
+          name: qt-sources
+          path: "~/qtsrc"
 
       - name: Free Disk Space (Ubuntu)
         if: contains(matrix.os, 'ubuntu')

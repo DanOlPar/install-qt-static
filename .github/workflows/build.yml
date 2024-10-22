@@ -98,19 +98,16 @@ jobs:
           path: "~/qtsrc"
           enableCrossOsArchive: true
 
-      - name: Compress sources action step
-        uses: a7ul/tar-action@v1.1.0
-        id: compress
-        with:
-          command: c
-          cwd: "~"
-          files: qtsrc
-          outPath: qtsrc.tar.gz
+
+      - name: Compress sources
+        run: |
+          cd ~
+          7z a qtsrc.zip qtsrc
 
       - uses: actions/upload-artifact@v4
         with:
           name: qt-sources
-          path: "qtsrc.tar.gz"
+          path: "qtsrc.zip"
 
   build:
     needs: setup
@@ -144,16 +141,12 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: qt-sources
-          path: "qtsrc.tar.gz"
+          path: "qtsrc.zip"
 
-      - name: Compress sources action step
-        uses: a7ul/tar-action@v1.1.0
-        id: compress
-        with:
-          command: x
-          cwd: "~"
-          files: qtsrc
-          outPath: qtsrc.tar.gz
+      - name: Extract sources
+        run: |
+          cd ~
+          7z e qtsrc.zip -o qtsrc
 
       - name: Free Disk Space (Ubuntu)
         if: contains(matrix.os, 'ubuntu')

@@ -157,6 +157,15 @@ jobs:
           enableCrossOsArchive: true
         #lookup-only: true
 
+
+      - name: Fix src location windows
+        if: contains(matrix.os, 'windows')
+        run: |
+          cd ~
+          move D:\a\install-qt-static\install-qt-static\qtsrc .
+
+         
+
       - name: Free Disk Space (Ubuntu)
         if: contains(matrix.os, 'ubuntu')
         uses: jlumbroso/free-disk-space@main

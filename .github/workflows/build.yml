@@ -98,12 +98,14 @@ jobs:
           path: "~/qtsrc"
           enableCrossOsArchive: true
 
-      - name: Create tgz
-        uses: ihiroky/archive-action@v1
+      - name: Compress sources action step
+        uses: a7ul/tar-action@v1.1.0
+        id: compress
         with:
-          root_dir: "qtsrc"
-          file_path: qtsrc.tar.gz
-          verbose: true
+          command: c
+          cwd: "~"
+          files: qtsrc
+          outPath: qtsrc.tar.gz
 
       - uses: actions/upload-artifact@v4
         with:
@@ -144,12 +146,14 @@ jobs:
           name: qt-sources
           path: "qtsrc.tar.gz"
 
-      - name: Extract tgz
-        uses: ihiroky/extract-action@v1
+      - name: Compress sources action step
+        uses: a7ul/tar-action@v1.1.0
+        id: compress
         with:
-          file_path: "qtsrc.tar.gz"
-          extract_dir: "~/qtsrc"
-          verbose: true
+          command: x
+          cwd: "~"
+          files: qtsrc
+          outPath: qtsrc.tar.gz
 
       - name: Free Disk Space (Ubuntu)
         if: contains(matrix.os, 'ubuntu')

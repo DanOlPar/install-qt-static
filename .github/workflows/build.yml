@@ -148,6 +148,10 @@ jobs:
       #    cd ~
       #    7z e qtsrc.zip -o qtsrc
 
+      - name: Change working dir
+        run: |
+          cd ~
+
       - name: Restore sources from cache 
         id: cache-qt-restore
         uses: actions/cache/restore@v4

@@ -235,7 +235,7 @@ jobs:
           cd ~
           mkdir qt_build
           cd qt_build
-          ~/qtsrc/configure -static -release -prefix "../qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -skip qtwebview,qtwebengine -DCMAKE_PREFIX_PATH=/usr/lib/llvm-18
+          ~/qtsrc/configure -static -release -prefix "../qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -skip qtwebview,qtwebengine -- -DCMAKE_PREFIX_PATH=/usr/lib/llvm-18
           cmake --build . --parallel 4 -j4
 
 

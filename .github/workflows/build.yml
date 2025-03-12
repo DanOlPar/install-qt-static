@@ -131,9 +131,12 @@ jobs:
         if: contains(matrix.os, 'ubuntu')
         run: |
           sudo apt-get update
+          sudo apt remove clang-12
           sudo apt remove clang-13
           sudo apt remove clang-14
           sudo apt remove clang-15
+          sudo apt remove clang-16
+          sudo apt-get install -y clang-16
           sudo apt-get install -y $(cat linux_packages.txt)
 
       - uses: seanmiddleditch/gha-setup-ninja@v5

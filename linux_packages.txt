@@ -32,8 +32,8 @@ nodejs
 mesa-common-dev
 libgl1-mesa-dev
 libglu1-mesa-dev
-llvm-16-dev
-llvm-16-runtime
+llvm-dev
+llvm-runtime
 libclang-dev
 libfreetype-dev
 libx11-dev

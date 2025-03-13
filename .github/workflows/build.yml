@@ -166,12 +166,16 @@ jobs:
         #lookup-only: true
 
 
-      #- name: Fix src location windows
-      #  if: contains(matrix.os, 'windows')
-      #  run: |
-      #    cd ~
-      #    ls D:\a\install-qt-static\install-qt-static 
-      #    move D:\a\install-qt-static\install-qt-static\qtsrc .
+      - name: Fix src location windows
+        if: contains(matrix.os, 'windows')
+        run: |
+          cd ~
+          ls D:\
+          ls D:\a\install-qt-static\install-qt-static 
+          move D:\qtsrc .
+         
+          
+        #move D:\a\install-qt-static\install-qt-static\qtsrc .
 
          
 

@@ -204,7 +204,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           key:  ${{env.VERSION_TAG}}-${{matrix.os}}
-          path: "./qt_build"
+          path: "~/qt_build"
 
 
       - name: Build Qt (Windows)

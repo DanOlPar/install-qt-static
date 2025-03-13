@@ -200,11 +200,11 @@ jobs:
       #  uses: ilammy/msvc-dev-cmd@v1
       #  if: contains(matrix.os, 'windows')
 
-      - name: Set up MinGW
-        uses: egor-tensin/setup-mingw@v2
-        if: contains(matrix.os, 'windows')
-        with:
-          platform: x64
+      #- name: Set up MinGW
+      #  uses: egor-tensin/setup-mingw@v2
+      #  if: contains(matrix.os, 'windows')
+      #  with:
+      #    platform: x64
 
 
       - name: Restore previous build for system if tag is same

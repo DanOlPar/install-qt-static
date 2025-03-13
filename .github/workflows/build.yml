@@ -257,6 +257,7 @@ jobs:
       - name: Install build 
         if: success() 
         run: |
+          ls
           cd qt_build
           cmake --install .
           cd ..

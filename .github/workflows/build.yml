@@ -23,7 +23,7 @@ jobs:
   setup:
     env:
       BUILD_LINUX: ${{(inputs.buildtype == 'all' || inputs.buildtype == 'linux') }}
-      BUILD_WINDOWS: ${{(inputs.buildtype == 'all' || inputs.buildtype == 'macos') }}
+      BUILD_WINDOWS: ${{(inputs.buildtype == 'all' || inputs.buildtype == 'windows') }}
       BUILD_MACOS: ${{(inputs.buildtype == 'all' || inputs.buildtype == 'macos') }}
     runs-on: ubuntu-latest
     outputs:

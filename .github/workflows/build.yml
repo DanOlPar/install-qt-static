@@ -152,9 +152,9 @@ jobs:
       #    cd ~
       #    7z e qtsrc.zip -o qtsrc
 
-      - name: Change working dir
-        run: |
-          cd ~
+      #- name: Change working dir
+      #  run: |
+      #    cd ~
 
       - name: Restore sources from cache 
         id: cache-qt-restore
@@ -166,16 +166,14 @@ jobs:
         #lookup-only: true
 
 
-      - name: Fix src location windows
-        if: contains(matrix.os, 'windows')
-        run: |
-          cd ~
-          ls D:\
-          ls D:\a\install-qt-static\install-qt-static 
-          move D:\qtsrc .
-         
-          
-        #move D:\a\install-qt-static\install-qt-static\qtsrc .
+      #REMOVED, D: DISK IS FASTER
+      #- name: Fix src location windows
+      #  if: contains(matrix.os, 'windows')
+      #  run: |
+      #    cd ~
+      #    ls D:\
+      #    ls D:\a\install-qt-static\install-qt-static 
+      #    move D:\qtsrc .
 
          
 
@@ -216,12 +214,10 @@ jobs:
         env:
           CL: /MP # Build with multiple processes
         run: |
-          cd ~
-          ls
-          ls /
+          cd D:\
           mkdir qt_build
           cd qt_build
-          ~\qtsrc\configure.bat -release -static -static-runtime -prefix "..\qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -skip qtwebview,qtwebengine
+          ..\qtsrc\configure.bat -release -static -static-runtime -prefix "..\qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -skip qtwebview,qtwebengine
           cmake --build . --parallel 4 -j4
 
       - name: Build Qt (macOS)
@@ -242,13 +238,22 @@ jobs:
           ~/qtsrc/configure -static -release -prefix "../qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -skip qtwebview,qtwebengine -- -DCMAKE_PREFIX_PATH=/usr/lib/llvm-18
           cmake --build . --parallel 4 -j4
 
-
-      - name: Install build
-        if: success()
+      - name: Change working dir (Ubuntu & MacOS)
+        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
         run: |
           cd ~
+      
+      - name: Change working dir (Windows)
+        if: contains(matrix.os, 'windows')
+        run: |
+          cd D:\
+      
+      - name: Install build 
+        if: success() 
+        run: |
           cd qt_build
           cmake --install .
+          cd ..
 
       - name: Save build if successful if version tag is same
         id: cache-build-save
@@ -260,13 +265,12 @@ jobs:
 
       - name: Package binaries
         run: |
-          cd ~
           7z a qt-${{env.QT_VERSION}}-static-${{matrix.os}}.zip qt_static
 
       - uses: actions/upload-artifact@v4
         with:
           name: qt-static-${{matrix.os}}
-          path:  ~/qt-${{env.QT_VERSION}}-static-${{matrix.os}}.zip
+          path:  ./qt-${{env.QT_VERSION}}-static-${{matrix.os}}.zip
 
   release:
     runs-on: ubuntu-latest

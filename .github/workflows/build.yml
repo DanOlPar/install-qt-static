@@ -203,7 +203,7 @@ jobs:
         id: cache-build-restore
         uses: actions/cache/restore@v4
         with:
-          key:  ${{env.VERSION_TAG}}-${{ matrix.os }}
+          key:  ${{env.VERSION_TAG}}-${{matrix.os}}
           path: "./qt_build"
 
 

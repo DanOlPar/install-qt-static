@@ -231,6 +231,7 @@ jobs:
         env:
           CL: /MP # Build with multiple processes
         run: |
+          echo $HOME_DIR
           cd $HOME_DIR
           ls
           mkdir qt_build

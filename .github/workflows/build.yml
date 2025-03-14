@@ -165,7 +165,7 @@ jobs:
       - name: Change working dir (Windows)
         if: contains(matrix.os, 'windows')
         run: |
-          echo "HOME_DIR=D:\" >> $GITHUB_ENV 
+          echo "HOME_DIR=D:\" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Restore sources from cache 
         id: cache-qt-restore

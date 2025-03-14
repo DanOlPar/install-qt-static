@@ -223,7 +223,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           key:  ${{env.VERSION_TAG}}-${{matrix.os}}
-          path: "~/qt_build"
+          path: "${{env.HOME_DIR}}/qt_build"
 
 
       - name: Build Qt (Windows)
@@ -231,8 +231,7 @@ jobs:
         env:
           CL: /MP # Build with multiple processes
         run: |
-          echo $HOME_DIR
-          cd $HOME_DIR
+          cd ${{env.HOME_DIR}}
           ls
           mkdir qt_build
           cd qt_build
@@ -242,7 +241,7 @@ jobs:
       - name: Build Qt (macOS)
         if: contains(matrix.os, 'macos') && steps.cache-build-restore.outputs.cache-hit != 'true'
         run: |
-          cd $HOME_DIR
+          cd ${{env.HOME_DIR}}
           mkdir qt_build
           cd qt_build
           ~/qtsrc/configure -static -release -prefix "../qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -sql-sqlite -skip qtwebview,qtwebengine -- -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
@@ -251,7 +250,7 @@ jobs:
       - name: Build Qt (linux)
         if: contains(matrix.os, 'ubuntu') && steps.cache-build-restore.outputs.cache-hit != 'true'
         run: |
-          cd $HOME_DIR
+          cd ${{env.HOME_DIR}}
           mkdir qt_build
           cd qt_build
           ~/qtsrc/configure -static -release -prefix "../qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -skip qtwebview,qtwebengine -- -DCMAKE_PREFIX_PATH=/usr/lib/llvm-18
@@ -261,7 +260,7 @@ jobs:
       - name: Install build 
         if: success() 
         run: |
-          cd $HOME_DIR
+          cd ${{env.HOME_DIR}}
           ls
           cd qt_build
           cmake --install .
@@ -273,11 +272,11 @@ jobs:
         uses: actions/cache/save@v4
         with:
           key: ${{ steps.cache-build-restore.outputs.cache-primary-key }}
-          path: "~/qt_build"
+          path: "${{env.HOME_DIR}}/qt_build"
 
       - name: Package binaries
         run: |
-          cd $HOME_DIR
+          cd ${{env.HOME_DIR}}
           7z a qt-${{env.QT_VERSION}}-static-${{matrix.os}}.zip qt_static
 
       - uses: actions/upload-artifact@v4

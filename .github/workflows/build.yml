@@ -231,7 +231,7 @@ jobs:
         env:
           CL: /MP # Build with multiple processes
         run: |
-          cd cd $HOME_DIR
+          cd $HOME_DIR
           mkdir qt_build
           cd qt_build
           ..\qtsrc\configure.bat -release -static -static-runtime -prefix "..\qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -skip qtwebview,qtwebengine

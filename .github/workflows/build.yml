@@ -232,6 +232,7 @@ jobs:
           CL: /MP # Build with multiple processes
         run: |
           cd $HOME_DIR
+          ls
           mkdir qt_build
           cd qt_build
           ..\qtsrc\configure.bat -release -static -static-runtime -prefix "..\qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -skip qtwebview,qtwebengine
@@ -281,7 +282,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: qt-static-${{matrix.os}}
-          path:  $HOME_DIR/qt-${{env.QT_VERSION}}-static-${{matrix.os}}.zip
+          path:  ${{env.HOME_DIR}}/qt-${{env.QT_VERSION}}-static-${{matrix.os}}.zip
 
   release:
     runs-on: ubuntu-latest

@@ -156,6 +156,17 @@ jobs:
       #  run: |
       #    cd ~
 
+
+      - name: Change working dir (Ubuntu & MacOS)
+        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+        run: |
+          echo "HOME_DIR=~" >> $GITHUB_ENV 
+    
+      - name: Change working dir (Windows)
+        if: contains(matrix.os, 'windows')
+        run: |
+          echo "HOME_DIR=D:\" >> $GITHUB_ENV 
+
       - name: Restore sources from cache 
         id: cache-qt-restore
         uses: actions/cache/restore@v4
@@ -220,7 +231,7 @@ jobs:
         env:
           CL: /MP # Build with multiple processes
         run: |
-          cd D:\
+          cd cd $HOME_DIR
           mkdir qt_build
           cd qt_build
           ..\qtsrc\configure.bat -release -static -static-runtime -prefix "..\qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -skip qtwebview,qtwebengine
@@ -229,7 +240,7 @@ jobs:
       - name: Build Qt (macOS)
         if: contains(matrix.os, 'macos') && steps.cache-build-restore.outputs.cache-hit != 'true'
         run: |
-          cd ~
+          cd $HOME_DIR
           mkdir qt_build
           cd qt_build
           ~/qtsrc/configure -static -release -prefix "../qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -sql-sqlite -skip qtwebview,qtwebengine -- -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
@@ -238,25 +249,17 @@ jobs:
       - name: Build Qt (linux)
         if: contains(matrix.os, 'ubuntu') && steps.cache-build-restore.outputs.cache-hit != 'true'
         run: |
-          cd ~
+          cd $HOME_DIR
           mkdir qt_build
           cd qt_build
           ~/qtsrc/configure -static -release -prefix "../qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -openssl-linked -sql-sqlite -skip qtwebview,qtwebengine -- -DCMAKE_PREFIX_PATH=/usr/lib/llvm-18
           cmake --build . --parallel 4 -j4
 
-      - name: Change working dir (Ubuntu & MacOS)
-        if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
-        run: |
-          cd ~
-      
-      - name: Change working dir (Windows)
-        if: contains(matrix.os, 'windows')
-        run: |
-          cd D:\
-      
+
       - name: Install build 
         if: success() 
         run: |
+          cd $HOME_DIR
           ls
           cd qt_build
           cmake --install .

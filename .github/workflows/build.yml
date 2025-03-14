@@ -160,7 +160,7 @@ jobs:
       - name: Change working dir (Ubuntu & MacOS)
         if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
         run: |
-          echo "HOME_DIR=~" >> $GITHUB_ENV 
+          echo "HOME_DIR=$HOME" >> $GITHUB_ENV 
     
       - name: Change working dir (Windows)
         if: contains(matrix.os, 'windows')

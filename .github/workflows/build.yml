@@ -275,12 +275,13 @@ jobs:
 
       - name: Package binaries
         run: |
+          cd $HOME_DIR
           7z a qt-${{env.QT_VERSION}}-static-${{matrix.os}}.zip qt_static
 
       - uses: actions/upload-artifact@v4
         with:
           name: qt-static-${{matrix.os}}
-          path:  ./qt-${{env.QT_VERSION}}-static-${{matrix.os}}.zip
+          path:  $HOME_DIR/qt-${{env.QT_VERSION}}-static-${{matrix.os}}.zip
 
   release:
     runs-on: ubuntu-latest

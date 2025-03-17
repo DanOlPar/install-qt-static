@@ -205,6 +205,12 @@ jobs:
           docker-images: true
           swap-storage: true
 
+
+      - name: Set up MSYS (Windows)
+        if: contains(matrix.os, 'windows')
+        run: |
+          choco list
+
       #- name: Remove default MinGW (Windows)
       #  if: contains(matrix.os, 'windows')
       #  run: |
@@ -243,6 +249,7 @@ jobs:
         run: |
           cd ${{env.HOME_DIR}}
           echo $PATH
+          choco list
           mkdir qt_build
           cd qt_build
           ..\qtsrc\configure.bat -release -static -static-runtime -prefix "..\qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -sql-sqlite -skip qtwebview,qtwebengine

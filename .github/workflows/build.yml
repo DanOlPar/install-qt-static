@@ -158,24 +158,24 @@ jobs:
 
 
       
-      - name: Remove old MinGW (Windows)
-        if: contains(matrix.os, 'windows')
-        run: |
-          $Env:Path
-          [collections.arraylist]$path = $env:path -split ';'
-          $path.remove('C:\mingw64\bin')
-          $env:Path = $path -join ';'
-          $Env:Path
+      #- name: Remove old MinGW (Windows)
+      #  if: contains(matrix.os, 'windows')
+      #  run: |
+      #    $Env:Path
+      #    [collections.arraylist]$path = $env:path -split ';'
+      #    $path.remove('C:\mingw64\bin')
+      #    $env:Path = $path -join ';'
+      #    $Env:Path
 
 
       #- name: Clean up PATH
       #  uses: egor-tensin/cleanup-path@v4
 
 
-      - name: List path (Windows)
-        if: contains(matrix.os, 'windows')
-        run: |
-          $Env:Path
+      #- name: List path (Windows)
+      #  if: contains(matrix.os, 'windows')
+      #  run: |
+      #    $Env:Path
 
       - name: Set home dir (Ubuntu & MacOS)
         if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
@@ -257,7 +257,10 @@ jobs:
         #shell: bash
         run: |
           cd ${{env.HOME_DIR}}
-          echo $PATH
+          [collections.arraylist]$path = $env:path -split ';'
+          $path.remove('C:\mingw64\bin')
+          $env:Path = $path -join ';'
+          $Env:Path
           choco list
           mkdir qt_build
           cd qt_build

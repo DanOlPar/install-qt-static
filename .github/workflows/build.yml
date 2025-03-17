@@ -99,16 +99,6 @@ jobs:
           enableCrossOsArchive: true
 
 
-      #- name: Compress sources
-      #  run: |
-      #    cd ~
-      #    7z a qtsrc.zip qtsrc
-
-      #- uses: actions/upload-artifact@v4
-      #  with:
-      #    name: qt-sources
-      #    path: "qtsrc.zip"
-
   build:
     needs: setup
     env: 
@@ -140,33 +130,8 @@ jobs:
           sudo apt-get install -y clang-18
           sudo apt-get install -y $(cat linux_packages.txt)
 
-      - uses: seanmiddleditch/gha-setup-ninja@v5
-      
-      #- uses: actions/download-artifact@v4
-      #  with:
-      #    name: qt-sources
-      #    path: "qtsrc.zip"
-
-      #- name: Extract sources
-      #  run: |
-      #    cd ~
-      #    7z e qtsrc.zip -o qtsrc
-
-      #- name: Change working dir
-      #  run: |
-      #    cd ~
-
-
-      
-      #- name: Remove old MinGW (Windows)
-      #  if: contains(matrix.os, 'windows')
-      #  run: |
-      #    $Env:Path
-      #    [collections.arraylist]$path = $env:path -split ';'
-      #    $path.remove('C:\mingw64\bin')
-      #    $env:Path = $path -join ';'
-      #    $Env:Path
-
+      - name: Set up Ninja 
+        uses: seanmiddleditch/gha-setup-ninja@v5    
 
       - name: Set home dir (Ubuntu & MacOS)
         if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
@@ -224,7 +189,7 @@ jobs:
         with:
           compiler: latest
 
-      - name: add path to PATH environment variable
+      - name: add new MinGW to PATH environment variable
         uses: myci-actions/export-env-var-powershell@1
         with:
           name: PATH
@@ -251,7 +216,6 @@ jobs:
           CL: /MP # Build with multiple processes
           CC: ${{ steps.install_cc.outputs.cc }}
           CXX: ${{ steps.install_cc.outputs.cxx }}
-        #shell: bash
         run: |
           cd ${{env.HOME_DIR}}
           $Env:Path

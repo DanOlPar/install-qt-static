@@ -168,14 +168,14 @@ jobs:
       #    $Env:Path
 
 
-      #- name: Clean up PATH
-      #  uses: egor-tensin/cleanup-path@v4
+      - name: Clean up PATH
+        uses: egor-tensin/cleanup-path@v4
 
 
-      #- name: List path (Windows)
-      #  if: contains(matrix.os, 'windows')
-      #  run: |
-      #    $Env:Path
+      - name: List path (Windows)
+        if: contains(matrix.os, 'windows')
+        run: |
+          $Env:Path
 
       - name: Set home dir (Ubuntu & MacOS)
         if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
@@ -233,6 +233,12 @@ jobs:
         with:
           compiler: latest
 
+      - name: add path to PATH environment variable
+        uses: myci-actions/export-env-var-powershell@1
+        with:
+          name: PATH
+          value: $env:PATH;C:\ProgramData\mingw64\mingw32\bin;C:\ProgramData\mingw64\mingw64\bin
+
       #- name: Set up MSYS (Windows)
       #  id: install_msys
       #  uses: msys2/setup-msys2@v2
@@ -261,7 +267,6 @@ jobs:
           $path.remove('C:\mingw64\bin')
           $env:Path = $path -join ';'
           $Env:Path
-          choco list
           mkdir qt_build
           cd qt_build
           ..\qtsrc\configure.bat -release -static -static-runtime -prefix "..\qt_static" -no-pch -no-feature-accessibility -feature-relocatable -nomake examples -nomake tools -nomake tests -gc-binaries -no-ltcg -sql-sqlite -skip qtwebview,qtwebengine

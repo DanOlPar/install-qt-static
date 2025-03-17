@@ -205,11 +205,11 @@ jobs:
           docker-images: true
           swap-storage: true
 
-      - name: Remove default MinGW (Windows)
-        if: contains(matrix.os, 'windows')
-        run: |
-          choco uninstall mingw --force
-          choco uninstall strawberryperl --force
+      #- name: Remove default MinGW (Windows)
+      #  if: contains(matrix.os, 'windows')
+      #  run: |
+      #    choco uninstall mingw --force
+      #    choco uninstall strawberryperl --force
 
       #- name: Set up MinGW (Windows)
       #  id: install_cc
@@ -240,7 +240,6 @@ jobs:
           #CC: ${{ steps.install_cc.outputs.cc }}
           #CXX: ${{ steps.install_cc.outputs.cxx }}
         #shell: bash
-        shell: msys2 {0}
         run: |
           cd ${{env.HOME_DIR}}
           echo $PATH

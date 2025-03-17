@@ -163,6 +163,21 @@ jobs:
         run: |
           $Env:Path
 
+          # Get it
+          $path = [System.Environment]::GetEnvironmentVariable(
+            'PATH',
+            'Machine'
+          )
+          # Remove unwanted elements
+          $path = ($path.Split(';') | Where-Object { $_ -ne 'C:\mingw64\bin' }) -join ';'
+          # Set it
+          [System.Environment]::SetEnvironmentVariable(
+            'PATH',
+            $path,
+            'Machine'
+          )
+          $Env:Path
+
       - name: Set home dir (Ubuntu & MacOS)
         if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
         run: |

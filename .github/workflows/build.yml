@@ -162,7 +162,19 @@ jobs:
         if: contains(matrix.os, 'windows')
         run: |
           $Env:Path
-          set PATH=%PATH:C:\mingw64\bin;=%
+          [collections.arraylist]$path = $env:path -split ';'
+          $path.remove('C:\mingw64\bin')
+          $env:Path = $path -join ';'
+          $Env:Path
+
+
+      #- name: Clean up PATH
+      #  uses: egor-tensin/cleanup-path@v4
+
+
+      - name: List path (Windows)
+        if: contains(matrix.os, 'windows')
+        run: |
           $Env:Path
 
       - name: Set home dir (Ubuntu & MacOS)

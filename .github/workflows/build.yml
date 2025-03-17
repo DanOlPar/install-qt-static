@@ -168,15 +168,6 @@ jobs:
       #    $Env:Path
 
 
-      - name: Clean up PATH
-        uses: egor-tensin/cleanup-path@v4
-
-
-      - name: List path (Windows)
-        if: contains(matrix.os, 'windows')
-        run: |
-          $Env:Path
-
       - name: Set home dir (Ubuntu & MacOS)
         if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
         run: |

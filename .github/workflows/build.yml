@@ -158,24 +158,11 @@ jobs:
 
 
       
-      - name: List path (Windows)
+      - name: Remove old MinGW (Windows)
         if: contains(matrix.os, 'windows')
         run: |
           $Env:Path
-
-          # Get it
-          $path = [System.Environment]::GetEnvironmentVariable(
-            'PATH',
-            'Machine'
-          )
-          # Remove unwanted elements
-          $path = ($path.Split(';') | Where-Object { $_ -ne 'C:\mingw64\bin' }) -join ';'
-          # Set it
-          [System.Environment]::SetEnvironmentVariable(
-            'PATH',
-            $path,
-            'Machine'
-          )
+          set PATH=%PATH:C:\mingw64\bin;=%
           $Env:Path
 
       - name: Set home dir (Ubuntu & MacOS)

@@ -190,6 +190,7 @@ jobs:
           compiler: latest
 
       - name: add new MinGW to PATH environment variable
+        if: contains(matrix.os, 'windows')
         uses: myci-actions/export-env-var-powershell@1
         with:
           name: PATH
